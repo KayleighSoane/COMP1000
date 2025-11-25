@@ -1,0 +1,4 @@
+﻿  Task8.cpp
+C:\Users\kayle\OneDrive - University of Plymouth\Github Repositories\Module-Tasks\COMP1000 tasks\Task8 - Classes\Task8\Task8.cpp(64,57): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\kayle\OneDrive - University of Plymouth\Github Repositories\Module-Tasks\COMP1000 tasks\Task8 - Classes\Task8\Task8.cpp(68,57): warning C4305: 'argument': truncation from 'double' to 'float'
+  Task8.vcxproj -> C:\Users\kayle\OneDrive - University of Plymouth\Github Repositories\Module-Tasks\COMP1000 tasks\Task8 - Classes\x64\Debug\Task8.exe
