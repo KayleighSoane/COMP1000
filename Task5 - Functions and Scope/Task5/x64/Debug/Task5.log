@@ -1,0 +1,3 @@
+﻿  Task5.cpp
+C:\Users\ksoane\Documents\comp1000 tasks\Task5 - Functions and Scope\Task5\Task5.cpp(22,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  Task5.vcxproj -> C:\Users\ksoane\Documents\comp1000 tasks\Task5 - Functions and Scope\x64\Debug\Task5.exe
