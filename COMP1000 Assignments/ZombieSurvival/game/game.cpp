@@ -7,9 +7,9 @@
 #include <thread>
 using namespace std;
 
-const int WIDTH = 40;
-const int HEIGHT = 20; //made map bigger
-char map[HEIGHT][WIDTH];
+const int X = 40;
+const int Y = 20; //made map bigger
+char map[X][Y];
 
 // Player position
 int playerX = 0;
@@ -24,7 +24,7 @@ void score() { //PRIORITY
 	//collect food - 3 points
 }
 
-//void timer() { 
+void timer() { 
     
 //   for (times; times >= 0; times--) {
 //       int minutes = times / 60;
@@ -35,7 +35,7 @@ void score() { //PRIORITY
 		//replaces the previous line in console, effectively refreshing the timer
         //problem: prevents me from moving on the map
 //		Sleep(1000);
-//	}
+}
     
 	//WORKS BUT COUNTS DOWN BEFORE GAME STARTS
 	//NEED TO USE MULTITHREADING TO RUN TIMER AND GAME SIMULTANEOUSLY BUT INDEPENDENTLY
@@ -72,17 +72,83 @@ void safety() {
 	//replenishes stats (health, ammo, hunger)
 }
 
-void zombies() { //PRIORITY
+    //ZOMBIES
     //plan:
     // zombie = Z
-    // zombie a = moves every 2 turns, takes two bullets to kill        ]
-	// zombie b = moves every turn, takes one bullet to kill            ] need a turn counter?
-	// zombie c = stationary, takes three bullets to kill               ] optional, start less complicated
-	// zombie d = moves twice every turn, takes one bullet to kill      ]
 	// spawn zombies at random locations each time
-	// zombies move towards player every two turns
+	// zombies move towards player every two turns - need a counter
 	// if zombie reaches player, decrease health by 10
+    //Z cannot replace P or E
+    //need to be killable - true and false - bool
+
+//tricky, did some research and was suggested to use vectors to store multiple coordinates
+//with vectors, can store pairs of values and then access each pair as a single element in the vector
+//can access single part of pair with .first or .second
+vector<pair<short int, short int>> zomb; // Store each zombie's coordinates, can be called individually
+void zomSpawn(int n) {
+    for (int s = 0; s < n; s++) { 
+        short int zomx, zomy;
+        do {
+           zomx = rand() % X;
+           zomy = rand() % Y;
+        } while (map[zomx][zomy] != '.'); //will generate new positions if it lands on P or E
+        map[zomx][zomy] = 'Z';
+		zomb.emplace_back(zomx, zomy); // Stores zombie coordinates
+    }
 }
+
+
+//wasn't working as one function, split into two
+void zomMove() {
+	static int moveCount = 0;
+	moveCount++;
+    if (moveCount % 2 == 0) { 
+        for (int i = 0; i < zomb.size(); i++) { //each loop moves one zombie
+			int zx = zomb[i].first; //get x coordinate of zombie i
+            int zy = zomb[i].second;
+            int direction = rand() % 4; //mod 4 of any number will only produce 0, 1, 2, or 3
+            if (direction == 0) {
+				if (map[zx + 1][zy] = '.') { //if the space below the zombie is empty
+                    map[zx][zy] = '.';
+					zx += 1;
+                    map[zx][zy] = 'Z';
+					zomb[i].first = zx; // Update zombie's new position
+                }
+            }
+            else if (direction == 1) {
+                if (map[zx - 1][zy] = '.') {
+                    map[zx][zy] = '.';
+                    zx -= 1;
+                    map[zx][zy] = 'Z';
+					zomb[i].first = zx; 
+                }
+                return;
+            }
+            else if (direction == 2) {
+                if (map[zx][zy + 1] = '.') {
+                    map[zx][zy] = '.';
+					zy += 1;
+                    map[zx][zy] = 'Z';
+					zomb[i].second = zy; 
+                }
+            }
+            else if (direction == 3) {
+                if (map[zx][zy - 1] = '.') {
+                    map[zx][zy] = '.';
+					zy -= 1;
+                    map[zx][zy] = 'Z';
+					zomb[i].second = zy; 
+                }
+            }
+        }
+    }
+} //not removing previous Z positions properly
+//need to update zomb vector with new positions
+//can i make it more compact? smaller integer types?
+//to add:   -10 player health if land on a P
+//          can be killed if within one coordinate in any direction?
+
+
 
 void energy() {
     //plan:
@@ -120,20 +186,20 @@ void ammo() {
 }
 
 void generateMap() { 
-    for (int i = 0; i < HEIGHT; i++) {
-        for (int j = 0; j < WIDTH; j++) {
-            map[i][j] = '.';
+    for (int i = 0; i < Y; i++) {
+        for (int j = 0; j < X; j++) {
+            map[j][i] = '.';
         }
     }
     map[0][0] = 'P'; // Player start
-    map[HEIGHT - 1][WIDTH - 1] = 'E'; // Exit
+    map[X - 1][Y - 1] = 'E'; // Exit
 }
 
 void printMap() {
     system("cls"); // Print map below the timer
-    for (int i = 0; i < HEIGHT; i++) {
-        for (int j = 0; j < WIDTH; j++) {
-            cout << map[i][j] << ' ';
+    for (int i = 0; i < Y; i++) {
+        for (int j = 0; j < X; j++) {
+            cout << map[j][i] << ' ';
         }
         cout << endl;
     }
@@ -144,11 +210,14 @@ void movePlayer(char move) {
     map[playerX][playerY] = '.';
 
     // Update position based on input
-    if (move == 'W' || move == 'w') playerX = max(0, playerX - 1);
-    if (move == 'S' || move == 's') playerX = min(HEIGHT - 1, playerX + 1);
-    if (move == 'A' || move == 'a') playerY = max(0, playerY - 1);
-    if (move == 'D' || move == 'd') playerY = min(WIDTH - 1, playerY + 1);
-	if (move == '3') { // Exit game during play
+    if (move == 'W' || move == 'w') playerY = max(0, playerY - 1);
+    if (move == 'S' || move == 's') playerY = min(Y - 1, playerY + 1);
+    if (move == 'A' || move == 'a') playerX = max(0, playerX - 1);
+    if (move == 'D' || move == 'd') playerX = min(X - 1, playerX + 1);
+    if (map[playerX][playerY] == 'Z'){
+        // decrease health by 10
+	}
+	if (move == '3') {                              // Exit game during play
         cout << endl << "------------" << endl;
         cout << "Exiting game" << endl;
         cout << "------------" << endl;
@@ -165,8 +234,9 @@ void movePlayer(char move) {
     map[playerX][playerY] = 'P';
 }
 
+static int Z = 3; //number of zombies to spawn
 int main(){
-    int input; 
+    int start; 
 	system("cls");
     
     cout << "========================" << endl;
@@ -177,21 +247,23 @@ int main(){
 	cout << "2 - Instructions" << endl;
 	cout << "3 - Exit" << endl;
 	cout << "----------------" << endl;
-    cin >> input;
+    cin >> start;
 
-    if (input == 1) {
+    if (start == 1) {
+		
         system("cls");
-		srand(time(0)); // Seed for random number generation - randomize map elements
+		srand(static_cast<unsigned int> (time(0))); // Seed for random number generation - randomize map elements
         generateMap();
+		zomSpawn(Z);
 
         while (true) {
 			printMap();
-                        
+			                       
 			//thread t(timer); //doesn't like it if i move this line above printMap()
 			//take a break from timer, focus on health, supplies, zombies first
 
             // Check win condition
-            if (playerX == HEIGHT - 1 && playerY == WIDTH - 1) {
+            if (playerX == X - 1 && playerY == Y - 1) {
 				cout << "-----------------------------------" << endl;
                 cout << "You reached the exit. You survived!" << endl;
 				cout << "-----------------------------------" << endl;
@@ -200,12 +272,11 @@ int main(){
 
             char move;
             move = _getch(); // Get single character input without enter
-            movePlayer(move);
-            // t.join();
-            
+            movePlayer(move); 
+            zomMove();
         }
     }
-    else if (input == 2) {
+    else if (start == 2) {
 		system("cls");
 		cout << "-------------------------------------------------" << endl;
         cout << "Instructions:" << endl;
@@ -219,7 +290,7 @@ int main(){
 		_getch();
 		main();
     }
-    else if (input == 3) {
+    else if (start == 3) {
 		cout << endl << "------------" << endl;
         cout << "Exiting game" << endl;
 		cout << "------------" << endl;

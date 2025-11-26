@@ -1,9 +1,9 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\kayle\\OneDrive - University of Plymouth\\Github Repositories\\Assignments\\COMP1000 Assignments\\ZombieSurvival\\",
+  "WorkspaceRootPath": "C:\\Users\\kayle\\OneDrive - University of Plymouth\\Github Repositories\\COMP1000\\COMP1000 Assignments\\ZombieSurvival\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{942E1761-F4AE-449E-A8B9-F11EE8A90D24}|game\\game.vcxproj|C:\\Users\\kayle\\OneDrive - University of Plymouth\\Github Repositories\\Assignments\\COMP1000 Assignments\\ZombieSurvival\\game\\game.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{942E1761-F4AE-449E-A8B9-F11EE8A90D24}|game\\game.vcxproj|C:\\Users\\kayle\\OneDrive - University of Plymouth\\Github Repositories\\COMP1000\\COMP1000 Assignments\\ZombieSurvival\\game\\game.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{942E1761-F4AE-449E-A8B9-F11EE8A90D24}|game\\game.vcxproj|solutionrelative:game\\game.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
@@ -28,11 +28,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "game.cpp",
-              "DocumentMoniker": "C:\\Users\\kayle\\OneDrive - University of Plymouth\\Github Repositories\\Assignments\\COMP1000 Assignments\\ZombieSurvival\\game\\game.cpp",
+              "DocumentMoniker": "C:\\Users\\kayle\\OneDrive - University of Plymouth\\Github Repositories\\COMP1000\\COMP1000 Assignments\\ZombieSurvival\\game\\game.cpp",
               "RelativeDocumentMoniker": "game\\game.cpp",
-              "ToolTip": "C:\\Users\\kayle\\OneDrive - University of Plymouth\\Github Repositories\\Assignments\\COMP1000 Assignments\\ZombieSurvival\\game\\game.cpp",
+              "ToolTip": "C:\\Users\\kayle\\OneDrive - University of Plymouth\\Github Repositories\\COMP1000\\COMP1000 Assignments\\ZombieSurvival\\game\\game.cpp",
               "RelativeToolTip": "game\\game.cpp",
-              "ViewState": "AgIAAHEAAAAAAAAAAAAUwI0AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-11-12T21:17:57.151Z",
               "EditorCaption": ""
