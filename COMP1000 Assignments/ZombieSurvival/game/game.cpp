@@ -84,89 +84,80 @@ void safety() {
 //tricky, did some research and was suggested to use vectors to store multiple coordinates
 //with vectors, can store pairs of values and then access each pair as a single element in the vector
 //can access single part of pair with .first or .second
-vector<pair<short int, short int>> zomb; // Store each zombie's coordinates, can be called individually
-void zomSpawn(int n) {
-    for (int s = 0; s < n; s++) { 
-        short int zomx, zomy;
-        do {
-           zomx = rand() % X;
-           zomy = rand() % Y;
-        } while (map[zomx][zomy] != '.'); //will generate new positions if it lands on P or E
-        map[zomx][zomy] = 'Z';
-		zomb.emplace_back(zomx, zomy); // Stores zombie coordinates
+
+vector<pair<short int, short int>> zomb; // Global
+// Store each zombie's coordinates, can be called individually
+void zomSpawn(int i, int n) {
+    for (i = 0; i < n; i++) { 
+        short int zomx = rand() % X;
+        short int zomy = rand() % Y;
+        if ((zomx == 0 && zomy == 0) || (zomx == X - 1 && zomy == Y - 1)) {
+            i--;   
+            continue;       //will regenerate random coordinates for this zombie if it spawns on P or E
+        }
+		map[zomx][zomy] = 'Z';         // Place zombie on map
+		zomb.emplace_back(zomx, zomy); // Stores zombie coordinates - zomb[0].first and zomb[0].second is zomx and zomy of first zombie
     }
 }
+// this works - DO NOT CHANGE
+// cout << zomb[0].first << ", " << zomb[0].second << endl; tested to see if coordinates are being stored correctly - worked
 
 
-//wasn't working as one function, split into two
-void zomMove() {
-	static int moveCount = 0;
-	moveCount++;
-    if (moveCount % 2 == 0) { 
-        for (int i = 0; i < zomb.size(); i++) { //each loop moves one zombie
-			int zx = zomb[i].first; //get x coordinate of zombie i
-            int zy = zomb[i].second;
-            int direction = rand() % 4; //mod 4 of any number will only produce 0, 1, 2, or 3
-            if (direction == 0) {
-				if (map[zx + 1][zy] = '.') { //if the space below the zombie is empty
-                    map[zx][zy] = '.';
-					zx += 1;
-                    map[zx][zy] = 'Z';
-					zomb[i].first = zx; // Update zombie's new position
-                }
-            }
-            else if (direction == 1) {
-                if (map[zx - 1][zy] = '.') {
-                    map[zx][zy] = '.';
-                    zx -= 1;
-                    map[zx][zy] = 'Z';
-					zomb[i].first = zx; 
-                }
-                return;
-            }
-            else if (direction == 2) {
-                if (map[zx][zy + 1] = '.') {
-                    map[zx][zy] = '.';
-					zy += 1;
-                    map[zx][zy] = 'Z';
-					zomb[i].second = zy; 
-                }
-            }
-            else if (direction == 3) {
-                if (map[zx][zy - 1] = '.') {
-                    map[zx][zy] = '.';
-					zy -= 1;
-                    map[zx][zy] = 'Z';
-					zomb[i].second = zy; 
-                }
-            }
-        }
+//need to figure out movement system
+//start with just moving one zombie for testing
+extern int moveCount;
+class zombie {
+public:
+    short int x;
+    short int y;
+
+	zombie(short int startX, short int startY) { // = constructor - initializes new zombie object with starting coordinates
+        x = startX;
+        y = startY;
     }
-} //not removing previous Z positions properly
-//need to update zomb vector with new positions
-//can i make it more compact? smaller integer types?
-//to add:   -10 player health if land on a P
-//          can be killed if within one coordinate in any direction?
 
+    void moveTowards(int playerX, int playerY) {
+        if (moveCount % 2 == 0) { // Move only on every second call
+            map[x][y] = '.'; // Clear previous zombie position on map
+            if (x < playerX) x++;//move zombie closer to player
+            else if (x > playerX) x--;
+            if (y < playerY) y++;
+            else if (y > playerY) y--;
+            map[x][y] = 'Z'; // Update zombie position on map
+        }
+	}
+};
+//order of zombie instructions:
+//spawn zombies at random locations - not p or e
+//every two player moves, move one space in random direction
+
+
+//generate random coordinates for each zombie
 
 
 void energy() {
     //plan:
 	//supply = f
-    //start with hunger zero
-    // if hunger is 100, decreases health over time
+    //start with hunger full
+    // if hunger is 0, decreases health over time?
 }
 
 void health() { //PRIORITY
-	int health = 100;
-    //plan:
-    //if P lands on a Z block, -10
-	//if P lands on +, +20
-	// start with 100 health
-    // health packs give 20 health
-	// when health is 0 print "you died"
-    //health shown on screen above map
-}
+	static int health = 100;
+    cout << "Health: " << health << endl;
+    if (map[playerX][playerY] == 'Z') {
+        health -= 100;
+    }
+    if (health <= 0) {
+        cout << "--------------------" << endl;
+        cout << "You died. Game Over." << endl;
+        cout << "--------------------" << endl;
+        exit(0);
+	}
+
+//health is displayed but not decreasing when player hits zombie - fix zombies first
+//not working because when P moves onto Z, Z is removed from map
+} 
 
 void hpack() {
     //plan:
@@ -214,9 +205,6 @@ void movePlayer(char move) {
     if (move == 'S' || move == 's') playerY = min(Y - 1, playerY + 1);
     if (move == 'A' || move == 'a') playerX = max(0, playerX - 1);
     if (move == 'D' || move == 'd') playerX = min(X - 1, playerX + 1);
-    if (map[playerX][playerY] == 'Z'){
-        // decrease health by 10
-	}
 	if (move == '3') {                              // Exit game during play
         cout << endl << "------------" << endl;
         cout << "Exiting game" << endl;
@@ -234,8 +222,11 @@ void movePlayer(char move) {
     map[playerX][playerY] = 'P';
 }
 
-static int Z = 3; //number of zombies to spawn
+int moveCount = 0; 
 int main(){
+    static int Z = 3
+        ; //number of zombies to spawn
+	static int i;     //loop counter
     int start; 
 	system("cls");
     
@@ -252,28 +243,36 @@ int main(){
     if (start == 1) {
 		
         system("cls");
-		srand(static_cast<unsigned int> (time(0))); // Seed for random number generation - randomize map elements
+		srand((time(0))); // Seed for random number generation - randomize map elements
         generateMap();
-		zomSpawn(Z);
+		zomSpawn(i, Z);
+        
 
         while (true) {
 			printMap();
-			                       
-			//thread t(timer); //doesn't like it if i move this line above printMap()
-			//take a break from timer, focus on health, supplies, zombies first
+			health();
 
-            // Check win condition
+			//thread t(timer); //doesn't like it if i move this line above printMap()
+			
+            char m;
+            m = _getch(); // Get single character input without enter
+            movePlayer(m);
+
+            moveCount++;
+            for (i = 0; i < Z; i++) {
+                zombie z(zomb[i].first, zomb[i].second);//aim: upload zombie coords into x and y in class zombie - WORKS - first and second becomes x and y in class
+                z.moveTowards(playerX, playerY);
+				zomb[i].first = z.x;   //update vector coordinates after movement
+				zomb[i].second = z.y;
+            }
+			//WORKS!! however - Zs overlap when they move onto same space - can i prevent this?
+
             if (playerX == X - 1 && playerY == Y - 1) {
 				cout << "-----------------------------------" << endl;
                 cout << "You reached the exit. You survived!" << endl;
 				cout << "-----------------------------------" << endl;
                 exit(0);
             }
-
-            char move;
-            move = _getch(); // Get single character input without enter
-            movePlayer(move); 
-            zomMove();
         }
     }
     else if (start == 2) {
