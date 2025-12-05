@@ -9,7 +9,7 @@ extern int playerX, playerY;
 
 class Zombie {
 private:
-	int z = 5; //no. zombies
+	int z = 5; //number of zombies
 	int x, y;
 	vector<pair<int, int>> zomcoords; //vector to store zombie coordinates
 
@@ -19,7 +19,7 @@ public:
 		for (int i = 0; i < z; i++) {
 			x = rand() % X;
 			y = rand() % Y;
-			if (x == 0 && y == 0 || x == X-1 && y == Y-1) {
+			if (x == 1 && y == 1 || x == X-2 && y == Y-2){
 				i--; //regenerate if spawns on player
 				continue;
 			}
@@ -58,6 +58,7 @@ public:
 
 			coord.first = zx;
 			coord.second = zy;
+			//auto coords = zomcoords;
 		}	
-	} 
+	} //can i make it simpler? all roads lead back to map[zx][zy] = 'Z';
 };

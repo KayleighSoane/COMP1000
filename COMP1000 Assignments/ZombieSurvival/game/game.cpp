@@ -1,17 +1,18 @@
+//Only allowed to use standard library & windows.h
 #include <iostream>
 #include <vector>
 #include <cstdlib>
 #include <ctime>
 #include <conio.h>
-#include <windows.h>
+#include <windows.h> // create colours and sleep
 #include <thread>
-#include "Header.h"
+#include "Header.h" // might have to move all code into cpp file to post as assignment
 using namespace std;
 
 const int X = 40, Y = 20;
 char map[X][Y];
-int playerX = 0, playerY = 0;
-int health = 100;
+int playerX = 1, playerY = 1;
+int h = 100;
 
 
 void score() { //PRIORITY
@@ -24,7 +25,8 @@ void score() { //PRIORITY
 }
 
 void timer() { 
-    
+//timer = seconds or amount of moves 
+
 //   for (times; times >= 0; times--) {
 //       int minutes = times / 60;
 //		int seconds = times % 60; //%60 (remainer after dividing by 60) of 300 is 0, of 299 is 59, of 298 is 58 etc
@@ -49,27 +51,13 @@ void timer() {
 
 void blockades() {
     //Plan:
-    // bloackade = /
+    // bloackade = #
     //3 random blockades on the map
     // only reveal when next to them
-    //cannot pass through blockades
+    //P and Z cannot pass through blockades
     //makes map more of a maze
 }
 
-void roads() {
-    //plan:
-	//can only move on roads?
-    //remove dots on map
-}
-
-void safety() {
-    //plan:
-    // safehouse = O
-	//one safe house on the map
-	// pauses zombie movement
-    //exiting safehouse doesnt count as a turn
-	//replenishes stats (health, ammo, hunger)
-}
 
     //ZOMBIES
     //plan:
@@ -88,21 +76,14 @@ void safety() {
 //generate random coordinates for each zombie
 
 
-void energy() {
-    //plan:
-	//supply = f
-    //start with hunger full
-    // if hunger is 0, decreases health over time?
-}
-
-//void health() {}
+void health() {}
 
 //health is displayed but not decreasing when player hits zombie - fix zombies first
 //not working because when P moves onto Z, Z is removed from map
 
-void hpack() {
+void food() {
     //plan:
-    //health pack = +
+    //health pack = F
 	// spawn 2 health packs at random locations
     //increase health by 20
 }
@@ -117,14 +98,26 @@ void ammo() {
 	// add ammo to counter, when counter is zero print "out of ammo"
 }
 
+void generateWalls() {
+    for (int i = 0; i < X; i++) {
+        map[i][0] = '#';
+        map[i][Y - 1] = '#';
+	}
+    for (int i = 0; i < Y; i++) {
+        map[0][i] = '#';
+        map[X - 1][i] = '#';
+	}
+}
+
 void generateMap() { 
     for (int i = 0; i < Y; i++) {
         for (int j = 0; j < X; j++) {
             map[j][i] = '.';
         }
     }
-    map[0][0] = 'P'; // Player start
-    map[X - 1][Y - 1] = 'E'; // Exit
+    map[1][1] = 'P'; // Player start
+    map[X - 2][Y - 2] = 'E'; // Exit
+	generateWalls();
 }
 
 void printMap() {
@@ -138,7 +131,7 @@ void printMap() {
 }
 
 void movePlayer(char move) {
- 
+    
     // Remove player from current position
     map[playerX][playerY] = '.';
 
@@ -166,10 +159,10 @@ int main(){
 
 	system("cls");
    
-    cout << "========================" << endl;
-    cout << "| ZOMBIE SURVIVAL GAME | " << endl;
-    cout << "========================" << endl;
-    cout << endl << "----------------" << endl;
+    cout << "==============================" << endl;
+    cout << "| ZOMBIE APOCALYPSE SURVIVAL | " << endl;
+    cout << "==============================" << endl << endl;
+    cout << "----------------" << endl;
 	cout << "1 - Start Game" << endl;
 	cout << "2 - Instructions" << endl;
 	cout << "3 - Exit" << endl;
@@ -187,10 +180,11 @@ int main(){
                 map[initialzomcoords.first][initialzomcoords.second] = 'Z'; //place zombies on map
             }
         }
-        z.checkcoords();
+        
 
        while (true) {
             printMap();
+            z.checkcoords();
 
             char m;
             m = _getch(); // Get single character input without enter
@@ -222,7 +216,7 @@ int main(){
                 }
             }
 
-            if (playerX == X - 1 && playerY == Y - 1) {
+            if (playerX == X - 2 && playerY == Y - 2) {
                 cout << "-----------------------------------" << endl;
                 cout << "You reached the exit. You survived!" << endl;
                 cout << "-----------------------------------" << endl;
