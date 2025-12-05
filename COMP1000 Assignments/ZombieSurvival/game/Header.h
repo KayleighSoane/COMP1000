@@ -19,8 +19,8 @@ public:
 		for (int i = 0; i < z; i++) {
 			x = rand() % X;
 			y = rand() % Y;
-			if (x == 1 && y == 1 || x == X-2 && y == Y-2){
-				i--; //regenerate if spawns on player
+			if (x <= 1 || x >= X - 2 || y <= 1 || y >= Y - 2) { //regenerate if spawns on player or borders
+				i--; 
 				continue;
 			}
 			else {
@@ -58,7 +58,8 @@ public:
 
 			coord.first = zx;
 			coord.second = zy;
-			//auto coords = zomcoords;
+			
 		}	
 	} //can i make it simpler? all roads lead back to map[zx][zy] = 'Z';
+	//map changes should be made in cpp
 };

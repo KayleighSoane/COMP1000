@@ -154,7 +154,8 @@ void movePlayer(char move) {
 
 int main(){
     srand(static_cast<unsigned int>(time(0))); // Seed for random number generation - randomize map elements
-	generateMap();
+	
+    generateMap();
     Zombie z(X, Y); //create zombies - needs to be put after seed to generate new each time, but before map print to place zombies on map
 
 	system("cls");
@@ -176,13 +177,13 @@ int main(){
 
         auto zomcoords = z.returncoords(); //z.returncoords() transfer values to main
         for (auto initialzomcoords : zomcoords) {
-            if (map[initialzomcoords.first][initialzomcoords.second] == '.') {
-                map[initialzomcoords.first][initialzomcoords.second] = 'Z'; //place zombies on map
-            }
+            int zx = 0, zy = 0;
+            zx = initialzomcoords.first;
+			zy = initialzomcoords.second;
+			map[zx][zy] = 'Z'; //place zombies on map
         }
         
-
-       while (true) {
+        while (true) {
             printMap();
             z.checkcoords();
 
